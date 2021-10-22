@@ -1,10 +1,11 @@
-import { StatusBar } from 'react-native';
-import React, { useState } from 'react';
-import styled, { ThemeProvider } from 'styled-components'
+import { StatusBar, Dimensions } from 'react-native'
+import React, { useState } from 'react'
+import styled, { ThemeProvider } from 'styled-components/native'
 import { theme } from './theme'
-import Input from './components/Input';
-import IconButton from './components/IconButton';
+import Input from './components/Input'
+import IconButton from './components/IconButton'
 import { icons } from './icons'
+import Task from './components/Task'
 
 const Container = styled.SafeAreaView`
   flex:1;
@@ -12,7 +13,6 @@ const Container = styled.SafeAreaView`
   align-items: center;
   justify-content: flex-start;
 `
-
 const Title = styled.Text`
   font-size: 40px;
   font-weight: 600;
@@ -21,7 +21,12 @@ const Title = styled.Text`
   align-items: flex-end;
   padding: 0 20px;
 `
+const List = styled.ScrollView`
+  flex:1;
+  width:${({ width }) => width - 40}px;
+`
 export default function App() {
+  const width = Dimensions.get('window').width
   const [newTask, setNewTask] = useState("")
   const addTask = () => {
     alert(newTask)
@@ -36,10 +41,23 @@ export default function App() {
           value={newTask} onChangeText={text => setNewTask(text)}
           onSubmitEditing={addTask}
         />
-        <IconButton icon={icons.check} onPress={() => alert('check')} />
-        <IconButton icon={icons.uncheck} onPress={() => alert('uncheck')} />
-        <IconButton icon={icons.edit} onPress={() => alert('edit')} />
-        <IconButton icon={icons.delete} onPress={() => alert('delete')} />
+        <List width={width}>
+          <Task text="Reat Native..." />
+          <Task text="Expo..." />
+          <Task text="JavaScript..." />
+          <Task text="Reat Native..." />
+          <Task text="Expo..." />
+          <Task text="JavaScript..." />
+          <Task text="Reat Native..." />
+          <Task text="Expo..." />
+          <Task text="JavaScript..." />
+          <Task text="Reat Native..." />
+          <Task text="Expo..." />
+          <Task text="JavaScript..." />
+          <Task text="Reat Native..." />
+          <Task text="Expo..." />
+          <Task text="JavaScript..." />
+        </List>
         <StatusBar barStyle="light-content" backgroundColor={theme.background} />
       </Container>
     </ThemeProvider>
