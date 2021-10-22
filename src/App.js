@@ -3,8 +3,6 @@ import React, { useState } from 'react'
 import styled, { ThemeProvider } from 'styled-components/native'
 import { theme } from './theme'
 import Input from './components/Input'
-import IconButton from './components/IconButton'
-import { icons } from './icons'
 import Task from './components/Task'
 
 const Container = styled.SafeAreaView`
@@ -27,10 +25,21 @@ const List = styled.ScrollView`
 `
 export default function App() {
   const width = Dimensions.get('window').width
+
+  const tempData = {
+    1: { id: '1', text: 'React Native', completed: false },
+    2: { id: '2', text: 'Expo', completed: true },
+    3: { id: '3', text: 'JavaScript', completed: false },
+  }
+  const [tasks, setTasks] = useState(tempData)
   const [newTask, setNewTask] = useState("")
   const addTask = () => {
+    if (newTask.length < 1) return
+    const id = Date.now().toString()
+    const newTaskObject = { [id]: { id, text: newTask, completed: false } }
     alert(newTask)
     setNewTask("")
+    setTasks({ ...tasks, ...newTaskObject })
   }
   return (
     <ThemeProvider theme={theme}>
@@ -42,24 +51,10 @@ export default function App() {
           onSubmitEditing={addTask}
         />
         <List width={width}>
-          <Task text="Reat Native..." />
-          <Task text="Expo..." />
-          <Task text="JavaScript..." />
-          <Task text="Reat Native..." />
-          <Task text="Expo..." />
-          <Task text="JavaScript..." />
-          <Task text="Reat Native..." />
-          <Task text="Expo..." />
-          <Task text="JavaScript..." />
-          <Task text="Reat Native..." />
-          <Task text="Expo..." />
-          <Task text="JavaScript..." />
-          <Task text="Reat Native..." />
-          <Task text="Expo..." />
-          <Task text="JavaScript..." />
+          {Object.values(tasks).reverse().map(item => <Task key={item.id} text={item.text} />)}
         </List>
         <StatusBar barStyle="light-content" backgroundColor={theme.background} />
       </Container>
-    </ThemeProvider>
+    </ThemeProvider >
   );
 }
