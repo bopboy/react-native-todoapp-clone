@@ -35,8 +35,8 @@ export default function App() {
   const [newTask, setNewTask] = useState("")
   const addTask = () => {
     if (newTask.length < 1) return
-    const id = Date.now().toString()
-    const newTaskObject = { [id]: { id, text: newTask, completed: false } }
+    const ID = Date.now().toString()
+    const newTaskObject = { [ID]: { id: ID, text: newTask, completed: false } }
     alert(newTask)
     setNewTask("")
     setTasks({ ...tasks, ...newTaskObject })
@@ -44,6 +44,11 @@ export default function App() {
   const deleteTask = id => {
     const currentTasks = Object.assign({}, tasks)
     delete currentTasks[id]
+    setTasks(currentTasks)
+  }
+  const toggleTask = id => {
+    const currentTasks = Object.assign({}, tasks)
+    currentTasks[id]['completed'] = !currentTasks[id]['completed']
     setTasks(currentTasks)
   }
   return (
@@ -57,7 +62,7 @@ export default function App() {
         />
         <List width={width}>
           {Object.values(tasks).reverse().map(item =>
-            <Task key={item.id} item={item} deleteTask={deleteTask} />)}
+            <Task key={item.id} item={item} deleteTask={deleteTask} toggleTask={toggleTask} />)}
         </List>
         <StatusBar barStyle="light-content" backgroundColor={theme.background} />
       </Container>
