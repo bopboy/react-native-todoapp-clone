@@ -51,6 +51,11 @@ export default function App() {
     currentTasks[id]['completed'] = !currentTasks[id]['completed']
     setTasks(currentTasks)
   }
+  const updateTask = item => {
+    const currentTasks = Object.assign({}, tasks)
+    currentTasks[item.id] = item
+    setTasks(currentTasks)
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -62,7 +67,12 @@ export default function App() {
         />
         <List width={width}>
           {Object.values(tasks).reverse().map(item =>
-            <Task key={item.id} item={item} deleteTask={deleteTask} toggleTask={toggleTask} />)}
+            <Task
+              key={item.id} item={item}
+              deleteTask={deleteTask} toggleTask={toggleTask} updateTask={updateTask}
+              onBlur={() => setNewTask('')}
+            />
+          )}
         </List>
         <StatusBar barStyle="light-content" backgroundColor={theme.background} />
       </Container>
