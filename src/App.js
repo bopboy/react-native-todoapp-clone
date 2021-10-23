@@ -96,7 +96,7 @@ export default function App() {
   ) : (
     <AppLoading
       startAsync={getData}
-      onFinish={() => setIsReady(true)}
+      onFinish={() => setIsReady(false)}
       onError={() => { }}
     />
   );
