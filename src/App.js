@@ -4,6 +4,8 @@ import styled, { ThemeProvider } from 'styled-components/native'
 import { theme } from './theme'
 import Input from './components/Input'
 import Task from './components/Task'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import AppLoading from 'expo-app-loading'
 
 const Container = styled.SafeAreaView`
   flex:1;
@@ -26,37 +28,51 @@ const List = styled.ScrollView`
 export default function App() {
   const width = Dimensions.get('window').width
 
-  const tempData = {
-    1: { id: '1', text: 'React Native', completed: false },
-    2: { id: '2', text: 'Expo', completed: true },
-    3: { id: '3', text: 'JavaScript', completed: false },
-  }
-  const [tasks, setTasks] = useState(tempData)
+  // const tempData = {
+  //   1: { id: '1', text: 'React Native', completed: false },
+  //   2: { id: '2', text: 'Expo', completed: true },
+  //   3: { id: '3', text: 'JavaScript', completed: false },
+  // }
+  const [tasks, setTasks] = useState({})
   const [newTask, setNewTask] = useState("")
+  const [isReady, setIsReady] = useState(false)
+
   const addTask = () => {
     if (newTask.length < 1) return
     const ID = Date.now().toString()
     const newTaskObject = { [ID]: { id: ID, text: newTask, completed: false } }
-    alert(newTask)
+    // alert(newTask)
     setNewTask("")
-    setTasks({ ...tasks, ...newTaskObject })
+    storeData({ ...tasks, ...newTaskObject })
+  }
+  const storeData = async (tasks) => {
+    try {
+      await AsyncStorage.setItem('tasks', JSON.stringify(tasks))
+      setTasks(tasks)
+    } catch (e) {
+      //
+    }
+  }
+  const getData = async () => {
+    const loadedData = await AsyncStorage.getItem('tasks')
+    setTasks(JSON.parse(loadedData || '{}'))
   }
   const deleteTask = id => {
     const currentTasks = Object.assign({}, tasks)
     delete currentTasks[id]
-    setTasks(currentTasks)
+    storeData(currentTasks)
   }
   const toggleTask = id => {
     const currentTasks = Object.assign({}, tasks)
     currentTasks[id]['completed'] = !currentTasks[id]['completed']
-    setTasks(currentTasks)
+    storeData(currentTasks)
   }
   const updateTask = item => {
     const currentTasks = Object.assign({}, tasks)
     currentTasks[item.id] = item
-    setTasks(currentTasks)
+    storeData(currentTasks)
   }
-  return (
+  return isReady ? (
     <ThemeProvider theme={theme}>
       <Container>
         <Title>TODO LIST</Title>
@@ -77,5 +93,11 @@ export default function App() {
         <StatusBar barStyle="light-content" backgroundColor={theme.background} />
       </Container>
     </ThemeProvider >
+  ) : (
+    <AppLoading
+      startAsync={getData}
+      onFinish={() => setIsReady(true)}
+      onError={() => { }}
+    />
   );
 }
